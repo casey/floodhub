@@ -32,7 +32,7 @@ wss.on('connection', (ws) => {
     var out = JSON.stringify(parsed);
 
     if (parsed.to == 'all') {
-      console.log(`Forwarding to all clients`);
+      console.log(`Forwarding to {$sockets.size} clients`);
       sockets.forEach(function (socket) {
         socket.send(out);
       });
