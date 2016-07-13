@@ -6,7 +6,7 @@ const SocketServer = require('ws').Server;
 const PORT = process.env.PORT || 3000;
 
 const app = express()
-  .use((req, res) => res.redirect('https://github.com/casey/floodhub'))
+  .use((req, res) => { console.log('Serving redirect'); res.redirect('https://github.com/casey/floodhub'); })
   .listen(PORT, () => console.log(`Listening on ${PORT}`));
 
 const wss = new SocketServer({server: app});
@@ -25,15 +25,18 @@ wss.on('connection', (ws) => {
     } catch(e) {
       console.warn(`Malformed JSON from client ${id}: ${e}: ${msg}`)
     }
+    console.log(`Received message from client ${id}: ${parsed}`);
     parsed.from = id;
 
     var out = JSON.stringify(parsed);
 
     if (parsed.to == 'all') {
+      console.log(`Forwarding to all clients`);
       sockets.forEach(function (socket) {
         socket.send(out);
       });
     } else if (sockets.has(parsed.to)) {
+      console.log(`Forwarding to client ${id}`);
       sockets[parsed.to].send(out);
     } else {
       console.warn(`Unknown recipient: ${msg}`);
@@ -41,6 +44,7 @@ wss.on('connection', (ws) => {
   });
 
   ws.on('close', function() { 
+    console.log(`Socket ${id} closed`);
     delete sockets[id];
   });
 });
