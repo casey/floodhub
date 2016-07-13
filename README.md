@@ -14,8 +14,7 @@ Messages sent by clients should be JSON strings that deserialize to objects with
 `to`:        A numeric ID will cause the message to be delivered
              to the client with that ID. The string "all" will
              cause the message to be delivered to all connected
-             clients. An array of client IDs will cause the message
-             to be delivered to just those clients.
+             clients.
 
 The server will add a `from` field set to the numeric ID of the
 originating client. The server assigns IDs to each client that
@@ -51,17 +50,17 @@ The following message sent by client 1:
   "namespace": "something-cool",
   "type":      "goodbye",
   "data":      [1,2,3],
-  "to":        [0,2,3]
+  "to":        3
 }
 ```
 
-Will be transmitted to clients 0, 2, and 3 as:
+Will be transmitted to client 3 as:
 ```
 {
   "namespace": "something-cool",
   "type":      "goodbye",
   "data":      [1,2,3],
-  "to":        [0, 2, 3],
+  "to":        3,
   "from":      1
 }
 ```
