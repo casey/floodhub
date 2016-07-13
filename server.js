@@ -41,6 +41,6 @@ wss.on('connection', (ws) => {
   });
 
   ws.on('close', function() { 
-    delete socket[id];
+    delete sockets[id];
   });
 });
