@@ -6,8 +6,11 @@ A simple websocket server.
 Messages sent by clients should be JSON strings that deserialize to objects with the following fields:
 
 `namespace`: The message namespace.
+
 `data`:      The message payload.
+
 `type`:      A string identifying the type of the message.
+
 `to`:        A numeric ID will cause the message to be delivered
              to the client with that ID. The string "all" will
              cause the message to be delivered to all connected
