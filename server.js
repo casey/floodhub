@@ -23,9 +23,10 @@ wss.on('connection', (ws) => {
     try {
       parsed = JSON.parse(msg);
     } catch(e) {
-      console.warn(`Malformed JSON from client ${id}: ${e}: ${msg}`)
+      console.warn(`Malformed JSON from client ${id}: ${e}: ${msg}`);
+      return;
     }
-    console.log(`Received message from client ${id}: ${parsed}`);
+    console.log(`Received message from client ${id}: ${msg}`);
     parsed.from = id;
 
     var out = JSON.stringify(parsed);
@@ -39,7 +40,7 @@ wss.on('connection', (ws) => {
       console.log(`Forwarding to client ${id}`);
       sockets[parsed.to].send(out);
     } else {
-      console.warn(`Unknown recipient: ${msg}`);
+      console.warn(`Unknown recipient: ${parsed.to}`);
     }
   });
 
