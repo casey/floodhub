@@ -16,7 +16,7 @@ var sockets = new Map();
 
 wss.on('connection', (ws) => {
   var id = nextID++;
-  sockets[id] = ws;
+  sockets.set(id, ws);
 
   ws.on('message', function(msg) {
     var parsed;
@@ -32,13 +32,17 @@ wss.on('connection', (ws) => {
     var out = JSON.stringify(parsed);
 
     if (parsed.to == 'all') {
-      console.log(`Forwarding to {$sockets.size} clients`);
-      sockets.forEach(function (socket) {
+      console.log(`Forwarding to ${sockets.size - 1} clients`);
+      sockets.forEach(function (socket, key) {
+        if (key === id) {
+          return;
+        }
+        console.log(`Forwarding to client ${key}`);
         socket.send(out);
       });
     } else if (sockets.has(parsed.to)) {
       console.log(`Forwarding to client ${id}`);
-      sockets[parsed.to].send(out);
+      sockets.get(parsed.to).send(out);
     } else {
       console.warn(`Unknown recipient: ${parsed.to}`);
     }
@@ -46,6 +50,6 @@ wss.on('connection', (ws) => {
 
   ws.on('close', function() { 
     console.log(`Socket ${id} closed`);
-    delete sockets[id];
+    sockets.delete(id);
   });
 });
